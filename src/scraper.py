@@ -3,6 +3,7 @@ import time
 import datetime
 import pandas as pd
 import tweepy
+import json
 from tqdm import tqdm
 
 
@@ -11,6 +12,7 @@ class Tweet_Cursor():
     def __init__(self, api : tweepy.API = None, words:[str]=None):
         self.words = words
         self.counter = 0
+        self.total_tweets = 0
         self.df = pd.DataFrame(columns=['username',
                                    'description',
                                    'location',
@@ -32,6 +34,8 @@ class Tweet_Cursor():
 
         try:
             os.makedirs("andooni")
+            os.makedirs("andooni/full_data")
+            os.makedirs("andooni/summary")
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
@@ -48,7 +52,8 @@ class Tweet_Cursor():
                 print(f" -- finished {self.counter} tweets -- ", end="\r")
 
             except:
-                print(f" -- paused after {self.counter} tweets --")
+                self.total_tweets += self.counter
+                print(f" -- exhausted after {self.counter} iterations, total tweets read : {self.total_tweets} --")
                 print(" -- reaching threshold, resting for a few minutes -- ")
                 for sec in tqdm(range(850)):
                     time.sleep(1)
@@ -89,10 +94,7 @@ class Tweet_Cursor():
 
             df.to_csv(filename, mode="a", encoding='utf-8', index=False)
 
-            json_list = []
-            for item in list_tweets:
-                json_list.append(item._json)
+            json_list = [item._json for item in list_tweets]
 
             full_df = pd.DataFrame(json_list)
-            full_df.to_csv(f'andooni/full_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv',
-                           mode="a", encoding='utf-8', index=False)
+            full_df.to_hdf(f'andooni/full_data/full_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.h5', complevel=5, key='df', mode="a", index=False)
