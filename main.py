@@ -1,7 +1,4 @@
-import os
-import tweepy
 from dotenv import load_dotenv
-import sys
 load_dotenv(".env")
 from src.scraper import *
 
