@@ -18,6 +18,7 @@ class Tweet_Cursor():
         self.iter_count = 0
         self.counter = 0
         self.total_tweets = 0
+        self.api_limit = int(os.environ["api_limit"]) or 2000
         self.df = pd.DataFrame(columns=['username',
                                    'description',
                                    'location',
@@ -119,7 +120,7 @@ class Tweet_Cursor():
 
         while True:
 
-            if abs(self.counter - 2600) > 50:
+            if abs(self.counter - self.api_limit) > 50:
 
                 try:
                     list_tweets = self.cursor.iterator.next()
