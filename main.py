@@ -1,6 +1,7 @@
 import os
 import tweepy
 from dotenv import load_dotenv
+import sys
 load_dotenv(".env")
 from src.scraper import *
 
@@ -13,6 +14,7 @@ if __name__ == '__main__':
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_key, access_secret)
+
     api = tweepy.API(auth)
 
     words = "لبیک_یا_خامنه‌_ای"

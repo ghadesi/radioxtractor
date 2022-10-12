@@ -1,5 +1,7 @@
-import os, errno
+import os
+import errno
 import time
+import sys
 import datetime
 import pandas as pd
 import tweepy
@@ -121,6 +123,9 @@ class Tweet_Cursor():
                     print(f" -- finished {self.counter} tweets -- ", end="\r")
 
                 except Exception as e:
+                    if e.response.status_code in (401,403):
+                        print('Twitter Authentication failed')
+                        sys.exit(1)
                     json_list = [item._json for item in agg_list]
                     self.save_to_hdf(json_list)
                     agg_list = []
