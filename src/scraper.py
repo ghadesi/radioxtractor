@@ -31,7 +31,7 @@ class Tweet_Cursor():
 
 
         try:
-            os.makedirs("scraping_results")
+            os.makedirs("andooni")
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
@@ -85,7 +85,7 @@ class Tweet_Cursor():
                 df.loc[len(df)] = ith_tweet
                 i = i + 1
 
-            filename = f'scraping_results/short_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv'
+            filename = f'andooni/short_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv'
 
             df.to_csv(filename, mode="a", encoding='utf-8', index=False)
 
@@ -94,5 +94,5 @@ class Tweet_Cursor():
                 json_list.append(item._json)
 
             full_df = pd.DataFrame(json_list)
-            full_df.to_csv(f'scraping_results/full_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv',
+            full_df.to_csv(f'andooni/full_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv',
                            mode="a", encoding='utf-8', index=False)
