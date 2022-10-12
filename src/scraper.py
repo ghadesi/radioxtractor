@@ -48,6 +48,9 @@ class Tweet_Cursor():
 
     def save_to_csv(self, list_tweets):
 
+        if len(list_tweets) == 0:
+            return None
+
         i = 1
         df = self.df.copy()
 
@@ -83,8 +86,12 @@ class Tweet_Cursor():
         df.to_csv(filename, mode="a", encoding='utf-8', index=False)
 
 
-    def save_to_hdf(self, json_list):
+    def save_to_hdf(self, agg_list):
 
+        if len(agg_list) == 0:
+            return None
+
+        json_list = [item._json for item in agg_list]
         full_df = pd.DataFrame(json_list)
         full_df.to_hdf(
             f'andooni/full_data/{datetime.datetime.now().isoformat()[:19].replace(":", "_").replace("-", "_")}.h5',
@@ -112,7 +119,7 @@ class Tweet_Cursor():
 
         while True:
 
-            if abs(self.counter - 3000) > 100:
+            if abs(self.counter - 2600) > 50:
 
                 try:
                     list_tweets = self.cursor.iterator.next()
@@ -126,8 +133,7 @@ class Tweet_Cursor():
                     if e.response.status_code in (401,403):
                         print('Twitter Authentication failed')
                         sys.exit(1)
-                    json_list = [item._json for item in agg_list]
-                    self.save_to_hdf(json_list)
+                    self.save_to_hdf(agg_list)
                     agg_list = []
                     self.sleep(note=str(e))
 
