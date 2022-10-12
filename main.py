@@ -16,11 +16,9 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
 
     words = "لبیک_یا_خامنه_ای"
-    print("Enter Date since The Tweets are required in yyyy-mm--dd")
-    date_since = '2022-09-10'
+    print(f"Scraping twitter for {words} Hastag")
 
     cursor = Tweet_Cursor(api=api, words=words)
     cursor.iterator()
-    json_list = []
 
     print('Scraping has completed!')
