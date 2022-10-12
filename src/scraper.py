@@ -49,7 +49,7 @@ class Tweet_Cursor():
 
             except:
                 print(f" -- paused after {self.counter} tweets --")
-                print(" -- reaching threshold, resting for 15 minutes -- ")
+                print(" -- reaching threshold, resting for a few minutes -- ")
                 for sec in tqdm(range(120)):
                     time.sleep(1)
                 self.counter = 0
