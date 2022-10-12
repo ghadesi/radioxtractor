@@ -146,5 +146,3 @@ class Tweet_Cursor():
                 self.save_to_hdf(agg_list)
                 agg_list = []
                 self.sleep(note="counter limit")
-
-            time.sleep(1)
