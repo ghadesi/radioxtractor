@@ -3,8 +3,10 @@ import time
 import datetime
 import pandas as pd
 import tweepy
-import json
+import warnings
 from tqdm import tqdm
+
+warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 
 class Tweet_Cursor():
@@ -45,17 +47,17 @@ class Tweet_Cursor():
         print(f"Start time : {self.init_time.isoformat()[:19]}")
 
         while True:
-            try:
+            if abs(self.counter - 900) > 50:
                 list_tweets = self.cursor.iterator.next()
                 count = len(list_tweets)
                 self.counter += count
                 print(f" -- finished {self.counter} tweets -- ", end="\r")
 
-            except:
+            else:
                 self.total_tweets += self.counter
-                print(f" -- exhausted after {self.counter} iterations, total tweets read : {self.total_tweets} --")
-                print(" -- reaching threshold, resting for a few minutes -- ")
-                for sec in tqdm(range(850)):
+                print(f" -- exhausting resource after {self.counter} iterations, total tweets read : {self.total_tweets} --")
+                print(" -- resting for 15 minutes -- ")
+                for i in tqdm(range(870)):
                     time.sleep(1)
                 self.counter = 0
                 list_tweets = self.cursor.iterator.next()
@@ -90,7 +92,7 @@ class Tweet_Cursor():
                 df.loc[len(df)] = ith_tweet
                 i = i + 1
 
-            filename = f'andooni/short_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv'
+            filename = f'andooni/summary/short_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv'
 
             df.to_csv(filename, mode="a", encoding='utf-8', index=False)
 
