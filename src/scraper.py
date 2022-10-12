@@ -87,7 +87,7 @@ class Tweet_Cursor():
 
             filename = f'scraping_results/short_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv'
 
-            df.to_csv(filename, mode="a", index=False)
+            df.to_csv(filename, mode="a", encoding='utf-8', index=False)
 
             json_list = []
             for item in list_tweets:
@@ -95,4 +95,4 @@ class Tweet_Cursor():
 
             full_df = pd.DataFrame(json_list)
             full_df.to_csv(f'scraping_results/full_data_{datetime.datetime.now().isoformat()[:10].replace(":","_")}.csv',
-                           'a', encoding='utf-8', index=False)
+                           mode="a", encoding='utf-8', index=False)
