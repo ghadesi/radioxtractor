@@ -18,6 +18,8 @@ class Tweet_Cursor():
         self.iter_count = 0
         self.counter = 0
         self.total_tweets = 0
+        self.t_loop = time.time()
+        self.time_passed = 0
         self.api_limit = int(os.environ["api_limit"]) or 2000
         self.df = pd.DataFrame(columns=['username',
                                    'description',
@@ -102,15 +104,17 @@ class Tweet_Cursor():
     def sleep(self, note:str=None):
         self.iter_count += 1
         self.total_tweets += self.counter
+        t_consum = abs(int(self.t_loop - self.time_passed))
+        sleep_time = 900 - t_consum
         print(f" -- exhausted due to : {note} -- ")
         print(
             f" -- tweets read in this iteration : {self.counter} -- ")
         print(f" -- total tweets read : {self.total_tweets} -- ")
         print(f" -- number of iterations : {self.iter_count} -- ")
-        print(" -- resting for 15 minutes -- ")
-        for i in tqdm(range(870)):
-            time.sleep(1)
+        print(f" -- {t_consum} seconds passed, resting for {sleep_time} seconds -- ")
         self.counter = 0
+        for i in tqdm(range(sleep_time)):
+            time.sleep(1)
 
 
     def iterator(self):
@@ -119,7 +123,7 @@ class Tweet_Cursor():
         agg_list = []
 
         while True:
-
+            self.time_passed = time.time()
             if abs(self.counter - self.api_limit) > 50:
 
                 try:
@@ -139,7 +143,8 @@ class Tweet_Cursor():
                     self.sleep(note=str(e))
 
             else:
-                json_list = [item._json for item in agg_list]
-                self.save_to_hdf(json_list)
+                self.save_to_hdf(agg_list)
                 agg_list = []
                 self.sleep(note="counter limit")
+
+            time.sleep(1)
