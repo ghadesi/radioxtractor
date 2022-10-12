@@ -16,7 +16,7 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
 
     words = "لبیک_یا_خامنه_ای"
-    print(f"Scraping twitter for {words} Hastag")
+    print(f"Scraping twitter for {words}#")
 
     cursor = Tweet_Cursor(api=api, words=words)
     cursor.iterator()
