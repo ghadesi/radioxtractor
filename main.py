@@ -15,7 +15,7 @@ if __name__ == '__main__':
     auth.set_access_token(access_key, access_secret)
     api = tweepy.API(auth)
 
-    words = "لبیک_یا_خامنه_ای"
+    words = "لبیک_یا_خامنه‌_ای"
     print(f"Scraping twitter for {words}#")
 
     cursor = Tweet_Cursor(api=api, words=words)

@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 class Tweet_Cursor():
 
-    def __init__(self, api : tweepy.API = None, words:str=None):
+    def __init__(self, api : tweepy.API = None, words:[str]=None):
         self.words = words
         self.counter = 0
         self.df = pd.DataFrame(columns=['username',
