@@ -1,4 +1,4 @@
-import os
+import os, errno
 import time
 from datetime import datetime
 import pandas as pd
@@ -30,6 +30,12 @@ class Tweet_Cursor():
                                since_id=date_since,
                                tweet_mode='extended')
 
+
+        try:
+            os.makedirs("scraping_results")
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
     def iterator(self):
 
@@ -80,7 +86,7 @@ class Tweet_Cursor():
                 df.loc[len(df)] = ith_tweet
                 i = i + 1
 
-            filename = f'tweeter_scraper/scraping_results/short_data_{datetime.now().isoformat()[:10].replace(":","_")}.csv'
+            filename = f'scraping_results/short_data_{datetime.now().isoformat()[:10].replace(":","_")}.csv'
 
             df.to_csv(filename, mode="a", index=False)
 
@@ -89,7 +95,7 @@ class Tweet_Cursor():
                 json_list.append(item._json)
 
             full_df = pd.DataFrame(json_list)
-            full_df.to_csv(f'tweeter_scraper/scraping_results/full_data_{datetime.now().isoformat()[:10].replace(":","_")}.csv',
+            full_df.to_csv(f'scraping_results/full_data_{datetime.now().isoformat()[:10].replace(":","_")}.csv',
                            'a', encoding='utf-8', index=False)
 
 
