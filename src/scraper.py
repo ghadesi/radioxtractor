@@ -116,6 +116,8 @@ class Tweet_Cursor():
         for i in tqdm(range(sleep_time)):
             time.sleep(1)
 
+        self.t_loop = time.time()
+
 
     def iterator(self):
 
