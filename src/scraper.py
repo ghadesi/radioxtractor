@@ -86,7 +86,7 @@ class Tweet_Cursor():
             df.loc[len(df)] = ith_tweet
             i = i + 1
 
-        filename = f'andooni/summary/short_data_{datetime.datetime.now().isoformat()[:10].replace(":", "_")}.csv'
+        filename = f'andooni/summary/short_data_{datetime.datetime.now().isoformat()[:14].replace(":", "_")}.csv'
 
         df.to_csv(filename, mode="a", encoding='utf-8', index=False)
 
@@ -115,7 +115,6 @@ class Tweet_Cursor():
             f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- """,)
         self.counter = 0
 
-        # for i in range(sleep_time):
         time.sleep(2)
 
 

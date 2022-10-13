@@ -1,8 +1,9 @@
 import pandas as pd
 import re
+import numpy as np
 import os
 
-path = "/Users/hessam.k.rad/Desktop/twitter_scraper/summary"
+path = "../andooni/summary"
 
 def calc_score(x:str=None):
 
@@ -54,5 +55,14 @@ arzeshi_users = users[users.arzeshi_score > 0]
 arzeshi_users.reset_index(inplace=True)
 df_arzeshi = df[df.username.isin(arzeshi_users.username.to_list())]
 df_arzeshi.retweetcount = df_arzeshi.retweetcount.astype(int)
-# df_arzeshi.sort_values(by="retweetcount", ascending=False, inplace=True)
-# df_arzeshi.drop_duplicates(subset="retweetcount", inplace=True, keep="first")
+df_arzeshi.sort_values(by="retweetcount", ascending=False, inplace=True)
+df_arzeshi.drop_duplicates(subset="retweetcount", inplace=True, keep="first")
+
+arzeshi_usernames = df_arzeshi.username.to_list()
+s = " ".join(arzeshi_usernames)
+# x = "@"+s
+
+df_arzeshi.to_csv("../andooni/output/arzeshi_table.csv")
+
+with open("../andooni/output/username_string.txt", "w") as text_file:
+    text_file.write(s)
