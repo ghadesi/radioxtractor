@@ -114,14 +114,11 @@ class Tweet_Cursor():
             f" -- number of iterations : {self.iter_count} -- "
             f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- """,)
         if note:
-            print(f" ## exhausted due to : {str(note)} ## ", end="\r")
-            sleep_time = (900 - int(time.time() - self.t_acum))
-            print(f" -- failed after {self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
-            self.iter_count -=1
+
         self.counter = 0
 
-        for i in range(sleep_time):
-            time.sleep(1)
+        # for i in range(sleep_time):
+        time.sleep(2)
 
 
     def iterator(self):
@@ -153,9 +150,10 @@ class Tweet_Cursor():
                     sys.exit(1)
                 self.save_to_hdf(agg_list)
                 agg_list = []
-                self.sleep(note=e)
-
-
+                print(f" ## exhausted due to : {str(e)} ## ", end="\r")
+                sleep_time = 850
+                print(f" -- failed after {self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
+                self.iter_count -= 1
 
             # else:
             #     self.save_to_hdf(agg_list)
