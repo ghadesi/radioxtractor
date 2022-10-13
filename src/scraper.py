@@ -102,10 +102,11 @@ class Tweet_Cursor():
 
 
     def sleep(self, note:str=None):
-        self.iter_count += 1
-        self.total_tweets += self.counter
         t_passed = abs(int(self.t_loop - self.time_passed))
         sleep_time = abs(900 - t_passed)
+        self.total_tweets += self.counter
+        if self.total_tweets > 0:
+            self.iter_count += 1
         print(f" -- exhausted due to : {note} -- ")
         print(
             f" -- tweets read in this iteration : {self.counter} -- ")
