@@ -104,26 +104,25 @@ class Tweet_Cursor():
 
 
     def sleep(self, note = None):
-        # self.t_loop = time.time()
-        t_iter = math.ceil(time.time() - self.time_passed)
+
+        t_iter = math.ceil(time.time() - self.t_loop)
         sleep_time = t_iter
         self.total_tweets += self.counter
-        print(f""" -- {round(time.time() - self.init_time.timestamp(),1)} seconds passed -- ", 
+        self.iter_count += 1
+        print(f""" -- {round(time.time() - self.init_time.timestamp(),1)} seconds -- total tweets : {self.total_tweets} -- ", 
             f" -- tweets read in this iteration : {self.counter} -- "
-            f" -- total tweets read : {self.total_tweets} -- "
             f" -- number of iterations : {self.iter_count} -- "
             f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- """,)
         if note:
             print(f" ## exhausted due to : {str(note)} ## ", end="\r")
             sleep_time = (900 - int(time.time() - self.t_acum))
             print(f" -- failed after {self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
+            self.iter_count -=1
         self.counter = 0
 
         for i in range(sleep_time):
             time.sleep(1)
 
-        # self.t_loop = time.time()
-        # self.time_passed = time.time()
 
 
 
