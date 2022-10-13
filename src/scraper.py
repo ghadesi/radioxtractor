@@ -19,6 +19,7 @@ class Tweet_Cursor():
         self.counter = 0
         self.total_tweets = 0
         self.t_loop = time.time()
+        self.t_acum = time.time()
         self.time_passed = 0
         self.api_limit = int(os.environ["api_limit"]) or 2000
         self.df = pd.DataFrame(columns=['username',
@@ -101,19 +102,21 @@ class Tweet_Cursor():
             complevel=9, key='df', mode="w", index=False)
 
 
-    def sleep(self, note:str=None):
-        t_passed = abs(int(self.t_loop - self.time_passed))
-        sleep_time = abs(900 - t_passed)
-        self.total_tweets += self.counter
-        if self.total_tweets > 0:
-            self.iter_count += 1
-        print(f" -- exhausted due to : {note} -- ")
+    def sleep(self, note = None):
+        t_iter = abs(int(self.t_loop - self.time_passed))
+        sleep_time = t_iter
+        print(f" -- {round(time.time() - self.init_time.timestamp(),1)} seconds passed -- ", end="\r")
         print(
-            f" -- tweets read in this iteration : {self.counter} -- ")
-        print(f" -- total tweets read : {self.total_tweets} -- ")
-        print(f" -- number of iterations : {self.iter_count} -- ")
-        print(f" -- {t_passed} seconds passed, resting for {sleep_time} seconds -- ")
+            f" -- tweets read in this iteration : {self.counter} -- ", end="\r")
+        print(f" -- total tweets read : {self.total_tweets} -- ", end="\r")
+        print(f" -- number of iterations : {self.iter_count} -- ", end="\r")
+        print(f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- ", end="\r")
+        if note:
+            print(f" ## exhausted due to : {str(note)} ## ", end="\r")
+            sleep_time = (900 - int(time.time() - self.t_acum))
+            print(f" -- failed after {self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
         self.counter = 0
+
         for i in tqdm(range(sleep_time)):
             time.sleep(1)
 
@@ -127,25 +130,27 @@ class Tweet_Cursor():
 
         while True:
             self.time_passed = time.time()
-            if abs(self.counter - self.api_limit) > 50:
+            # if abs(self.counter - self.api_limit) > 50:
 
-                try:
-                    list_tweets = self.cursor.iterator.next()
-                    self.save_to_csv(list_tweets)
-                    agg_list.extend(list_tweets)
-                    count = len(list_tweets)
-                    self.counter += count
-                    print(f" -- finished {self.counter} tweets -- ", end="\r")
+            try:
+                list_tweets = self.cursor.iterator.next()
+                self.save_to_csv(list_tweets)
+                agg_list.extend(list_tweets)
+                count = len(list_tweets)
+                self.counter += count
+                e = None
+                print(f" -- finished {self.counter} tweets -- ", end="\r")
 
-                except Exception as e:
-                    if e.response.status_code in (401,403):
-                        print('Twitter Authentication failed')
-                        sys.exit(1)
-                    self.save_to_hdf(agg_list)
-                    agg_list = []
-                    self.sleep(note=str(e))
-
-            else:
+            except Exception as e:
+                if e.response.status_code in (401,403):
+                    print('Twitter Authentication failed')
+                    sys.exit(1)
                 self.save_to_hdf(agg_list)
                 agg_list = []
-                self.sleep(note="counter limit")
+
+            self.sleep(note=e)
+
+            # else:
+            #     self.save_to_hdf(agg_list)
+            #     agg_list = []
+            #     self.sleep(note="counter limit")
