@@ -22,6 +22,7 @@ class Tweet_Cursor():
         self.t_loop = time.time()
         self.t_acum = time.time()
         self.time_passed = 0
+        self.last_results = None
         self.api_limit = int(os.environ["api_limit"]) or 2000
         self.df = pd.DataFrame(columns=['username',
                                    'description',
@@ -40,7 +41,6 @@ class Tweet_Cursor():
                                words,
                                since_id=orig_time.date().isoformat(),
                                tweet_mode='extended')
-
 
         try:
             os.makedirs("andooni")
@@ -103,7 +103,7 @@ class Tweet_Cursor():
             complevel=9, key='df', mode="w", index=False)
 
 
-    def sleep(self, note = None):
+    def sleep(self):
 
         t_iter = math.ceil(time.time() - self.t_loop)
         sleep_time = t_iter
@@ -113,8 +113,6 @@ class Tweet_Cursor():
             f" -- tweets read in this iteration : {self.counter} -- "
             f" -- number of iterations : {self.iter_count} -- "
             f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- """,)
-        if note:
-
         self.counter = 0
 
         # for i in range(sleep_time):
@@ -125,6 +123,7 @@ class Tweet_Cursor():
 
         print(f"Start time : {self.init_time.isoformat()[:19]}")
         agg_list = []
+        list_tweets = []
 
         while True:
 
@@ -134,6 +133,7 @@ class Tweet_Cursor():
                 agg_list = []
 
             try:
+                self.last_results = list_tweets.copy()
                 list_tweets = self.cursor.iterator.next()
                 self.save_to_csv(list_tweets)
                 agg_list.extend(list_tweets)
@@ -144,16 +144,14 @@ class Tweet_Cursor():
                 self.sleep(note=e)
 
             except Exception as e:
-                if e.response.status_code in (401,403):
-                    print(str(e))
-                    print('Twitter Authentication failed')
-                    sys.exit(1)
                 self.save_to_hdf(agg_list)
                 agg_list = []
                 print(f" ## exhausted due to : {str(e)} ## ", end="\r")
-                sleep_time = 850
+                sleep_time = int(900 - (time.time() - self.t_acum))
                 print(f" -- failed after {self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
-                self.iter_count -= 1
+                self.counter = 0
+                self.t_acum = 0
+                time.sleep(sleep_time)
 
             # else:
             #     self.save_to_hdf(agg_list)
