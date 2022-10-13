@@ -148,7 +148,7 @@ class Tweet_Cursor():
                 agg_list = []
                 print(f" ## exhausted due to : {str(e)} ## ", end="\r")
                 sleep_time = int(900 - (time.time() - self.t_acum))
-                print(f" -- failed after {self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
+                print(f" -- failed after {time.time() - self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
                 self.counter = 0
                 self.t_acum = 0
                 time.sleep(sleep_time)
