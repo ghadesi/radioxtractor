@@ -124,16 +124,18 @@ class Tweet_Cursor():
             time.sleep(1)
 
 
-
-
     def iterator(self):
 
         print(f"Start time : {self.init_time.isoformat()[:19]}")
         agg_list = []
 
         while True:
+
             self.t_loop = time.time()
-            # if abs(self.counter - self.api_limit) > 50:
+            if len(agg_list) > 5000:
+                self.save_to_hdf(agg_list)
+                agg_list = []
+
             try:
                 list_tweets = self.cursor.iterator.next()
                 self.save_to_csv(list_tweets)
