@@ -18,11 +18,6 @@ if __name__ == '__main__':
     print(f"Scraping twitter for {words}#")
 
     cursor = Tweet_Cursor(api=api, words=words)
-
-    try:
-        cursor.iterator()
-
-    except:
-        last_results = cursor.last_results
+    cursor.iterator()
 
     print('Scraping has completed!')
