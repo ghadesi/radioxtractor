@@ -82,12 +82,11 @@ class GetInstagramProfile():
                 print("\n\n")
 
 
-x = "ایران_قوی"
 if __name__ == "__main__":
     cls = GetInstagramProfile()
     # cls.download_users_profile_picture("best_gadgets_2030")
     # cls.download_users_posts_with_periods("best_gadgets_2030")
-    cls.download_hastag_posts(x)
+    # cls.download_hastag_posts(hashtag)
     # cls.get_users_followers("best_gadgets_2030")
     # cls.get_users_followings("best_gadgets_2030")
     # cls.get_post_comments("laydline")
