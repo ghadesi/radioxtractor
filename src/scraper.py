@@ -1,13 +1,11 @@
 import os
 import errno
 import time
-import sys
 import datetime
 import pandas as pd
 import tweepy
 import warnings
 import math
-from tqdm import tqdm
 
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
@@ -35,7 +33,7 @@ class Tweet_Cursor():
                                    'hashtags',
                                    'source'])
 
-        orig_time = (datetime.datetime.now() - datetime.timedelta(days=30))
+        orig_time = (datetime.datetime.now() - datetime.timedelta(days=2))
         self.init_time = datetime.datetime.now()
         self.cursor = tweepy.Cursor(api.search_tweets,
                                words,
@@ -115,7 +113,7 @@ class Tweet_Cursor():
             f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- """,)
         self.counter = 0
 
-        time.sleep(2)
+        time.sleep(3)
 
 
     def iterator(self):
