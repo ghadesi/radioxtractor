@@ -33,7 +33,7 @@ class Tweet_Cursor():
                                    'hashtags',
                                    'source'])
 
-        orig_time = (datetime.datetime.now() - datetime.timedelta(days=2))
+        orig_time = (datetime.datetime.now() - datetime.timedelta(days=7))
         self.init_time = datetime.datetime.now()
         self.cursor = tweepy.Cursor(api.search_tweets,
                                words,
@@ -112,7 +112,6 @@ class Tweet_Cursor():
             f" -- number of iterations : {self.iter_count} -- "
             f" -- {t_iter} seconds passed, resting for {sleep_time} seconds -- """,)
         self.counter = 0
-
         time.sleep(3)
 
 
@@ -138,19 +137,12 @@ class Tweet_Cursor():
                 self.counter += count
                 e = None
                 print(f" -- finished {self.counter} tweets -- ", end="\r")
-                self.sleep(note=e)
+                self.sleep()
 
             except Exception as e:
                 self.save_to_hdf(agg_list)
                 agg_list = []
                 print(f" ## exhausted due to : {str(e)} ## ", end="\r")
-                sleep_time = int(900 - (time.time() - self.t_acum))
-                print(f" -- failed after {time.time() - self.t_acum} seconds, resting for {sleep_time} seconds -- ", end="\r")
+                print(f" -- failed after {self.total_tweets} seconds, resting for {300} seconds -- ", end="\r")
                 self.counter = 0
-                self.t_acum = 0
-                time.sleep(sleep_time)
-
-            # else:
-            #     self.save_to_hdf(agg_list)
-            #     agg_list = []
-            #     self.sleep(note="counter limit")
+                time.sleep(300)
